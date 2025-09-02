@@ -1,0 +1,85 @@
+# 🎮 Tic-Tac-Toe Game in Python
+
+def winner(board, player):
+    """Check if the given player has won."""
+    # Check rows and columns
+    for i in range(3):
+        if all(board[i][j] == player for j in range(3)) or \
+           all(board[j][i] == player for j in range(3)):
+            return True
+    
+    # Check diagonals
+    if all(board[i][i] == player for i in range(3)) or \
+       all(board[i][2 - i] == player for i in range(3)):
+        return True
+
+    return False
+
+
+def is_full(board):
+    """Check if the board is full (tie)."""
+    return all(cell != " " for row in board for cell in row)
+
+
+def move(player):
+    """Ask player for a valid move."""
+    while True:
+        try:
+            row = int(input(f"Player {player}, enter row (0, 1, or 2): "))
+            col = int(input(f"Player {player}, enter column (0, 1, or 2): "))
+            if 0 <= row <= 2 and 0 <= col <= 2:
+                return row, col
+            else:
+                print("❌ Invalid input. Please enter numbers between 0 and 2.")
+        except ValueError:
+            print("❌ Please enter valid numbers!")
+
+
+def draw_board(board):
+    """Print the current state of the board."""
+    for i, row in enumerate(board):
+        print(" | ".join(row))
+        if i < 2:
+            print("-" * 9)
+
+
+def play():
+    """Main game loop."""
+    board = [[" " for _ in range(3)] for _ in range(3)]
+    players = ['X', 'O']
+    current_player = 0  # Start with X
+
+    print("\n🎮 Welcome to Tic-Tac-Toe!")
+    print("Players take turns placing X and O on the board.")
+    print("First to get 3 in a row (horizontal, vertical, or diagonal) wins!\n")
+
+    while True:
+        draw_board(board)
+        player = players[current_player]
+        print(f"\n👉 Player {player}'s turn")
+
+        row, col = move(player)
+
+        if board[row][col] == " ":
+            board[row][col] = player
+
+            # Check win
+            if winner(board, player):
+                draw_board(board)
+                print(f"\n🏆 Player {player} wins! 🎉")
+                break
+
+            # Check tie
+            if is_full(board):
+                draw_board(board)
+                print("\n🤝 It's a tie!")
+                break
+
+            # Switch turn
+            current_player = 1 - current_player
+        else:
+            print("❌ That position is already filled. Try again!")
+
+
+if __name__ == "__main__":
+    play()
